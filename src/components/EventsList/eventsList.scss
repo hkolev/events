@@ -1,0 +1,35 @@
+.events {
+    display: flex;
+    flex-wrap: wrap;
+    margin: 0 -10px;
+    flex: 1;
+
+    .event {
+        flex: 0 1 25%;
+        padding: 0 10px;
+    }
+}
+
+@media(max-width: 1023px) {
+    .events {
+        & .event {
+            flex: 0 1 50%;
+        }
+    }
+}
+
+@media(max-width: 767px) {
+    .events {
+        & .event {
+            flex: 0 1 50%;
+        }
+    }
+}
+
+@media(max-width: 474px) {
+    .events {
+        & .event {
+            flex: 0 1 100%;
+        }
+    }
+}
