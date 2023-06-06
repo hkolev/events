@@ -15,6 +15,7 @@ import {
   CircularProgress,
 } from '@mui/material';
 import { GetEventContext, GetEventType } from './GetEventContext';
+import { EventsContext, EventsType } from '../../contexts/EventsContext';
 
 export const EventPage = () => {
   const { isLoading, data, eventId } = useContext(
@@ -24,6 +25,8 @@ export const EventPage = () => {
   const { addToWishList, wishList } = useContext(
     WishlistContext
   ) as WishlistType;
+
+  const { events: ownEvents } = useContext(EventsContext) as EventsType;
 
   const { addToCart } = useContext(GlobalContext) as GlobalContextType;
 
@@ -153,7 +156,7 @@ export const EventPage = () => {
             <Button
               variant="contained"
               color="primary"
-              onClick={() =>
+              onClick={() => {
                 addToWishList({
                   id: data.id,
                   title: data.title,
@@ -161,8 +164,11 @@ export const EventPage = () => {
                   date: String(data.date),
                   location: data.location,
                   price: data.price,
-                })
-              }
+                  userCreated: !!ownEvents.find(
+                    (el) => data.title === el.title
+                  ),
+                });
+              }}
             >
               {wishList.find((el) => el.id === Number(eventId))
                 ? 'Remove from wishlist'

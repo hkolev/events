@@ -17,9 +17,8 @@ export default function App() {
       <WishlistProivider>
         <EventsProvider>
           <Routes>
-            <Route path="*" element={<NoMatch />} />
-
             <Route path={pageRoutes.index} element={<Layout />}>
+              <Route path="*" element={<NoMatch />} />
               <Route index element={<Home />} />
               <Route path={pageRoutes.create} element={<CreateEvent />} />
               <Route path={pageRoutes.event} element={<Event />} />

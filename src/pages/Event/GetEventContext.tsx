@@ -1,6 +1,6 @@
 import { createContext, useContext } from 'react';
 import { useQuery } from 'react-query';
-import { useLocation } from 'react-router-dom';
+import { Navigate, useLocation } from 'react-router-dom';
 import { getEvent } from '../../api/events';
 import { EventsContext, EventsType } from '../../contexts/EventsContext';
 import { EventType } from '../../components/Event/Event';
@@ -21,6 +21,8 @@ export const GetEventProvider = ({ children }: GetEventProividerType) => {
   const { state } = useLocation();
   const { events: ownEvents } = useContext(EventsContext) as EventsType;
 
+  const isOwnEvent = ownEvents.find((el) => el.id === Number(state.id));
+
   const { data, isLoading } = useQuery(
     ['event', state.id],
     () => getEvent(state.id),
@@ -29,18 +31,18 @@ export const GetEventProvider = ({ children }: GetEventProividerType) => {
     }
   );
 
-  const findEvent = ownEvents.find((el) => el.id === Number(state.id));
-
   const remapedDataForPage = {
-    id: !state.userCreated ? data?.id : findEvent?.id,
-    image: !state.userCreated ? data?.performers[0]?.image : findEvent?.image,
-    title: !state.userCreated ? data?.title : findEvent?.title,
-    price: !state.userCreated ? data?.stats?.average_price : findEvent?.price,
-    date: !state.userCreated ? data?.datetime_utc : findEvent?.date,
-    location: !state.userCreated ? data?.venue?.name : findEvent?.location,
+    id: !state.userCreated ? data?.id : isOwnEvent?.id,
+    image: !state.userCreated ? data?.performers[0]?.image : isOwnEvent?.image,
+    title: !state.userCreated ? data?.title : isOwnEvent?.title,
+    price: !state.userCreated ? data?.stats?.average_price : isOwnEvent?.price,
+    date: !state.userCreated ? data?.datetime_utc : isOwnEvent?.date,
+    location: !state.userCreated ? data?.venue?.name : isOwnEvent?.location,
   };
 
-  return (
+  return !ownEvents.length ? (
+    <Navigate to="/" replace />
+  ) : (
     <GetEventContext.Provider
       value={{
         data: remapedDataForPage,
